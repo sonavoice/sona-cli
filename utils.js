@@ -21,7 +21,8 @@ var getConfig = function() {
     config = JSON.parse(fs.readFileSync(getHome() + "/.sona.json"));
   } catch (e) {
     config = {
-      guid: null
+      guid: null,
+      email: null,
     };
     fs.writeFileSync(getHome() + "/.sona.json", JSON.stringify(config, null, 2));
   }
@@ -35,6 +36,16 @@ var getGUID = function() {
 var setGUID = function(guid) {
   var config = JSON.parse(fs.readFileSync(getHome() + "/.sona.json"));
   config.guid = guid;
+  fs.writeFileSync(getHome() + "/.sona.json", JSON.stringify(config, null, 2));
+};
+
+var getEmail = function() {
+  return getConfig().email;
+};
+
+var setEmail = function(email) {
+  var config = JSON.parse(fs.readFileSync(getHome() + "/.sona.json"));
+  config.email = email;
   fs.writeFileSync(getHome() + "/.sona.json", JSON.stringify(config, null, 2));
 };
 
@@ -63,5 +74,7 @@ module.exports.lodir = lodir;
 module.exports.getConfig = getConfig;
 module.exports.getGUID = getGUID;
 module.exports.setGUID = setGUID;
+module.exports.getEmail = getEmail;
+module.exports.setEmail = setEmail;
 module.exports.getHome = getHome;
 module.exports.zip = zip;
