@@ -12,14 +12,26 @@ var args = process.argv.slice(2);
 var demo = true;
 var config = utils.getConfig();
 
-if (!args.length)
+if (!args.length || args[0] === "--help" || args[0] === "help") {
+  console.log("Sona, version " + pack.version + "\n");
+  console.log("   init [dir]\tIntializes a new Sona project");
+  console.log("   config\tView saved settings");
+  console.log("   publish\tUpload extension to Sona server");
+  console.log("   login\tAuthenticate yourself as the author of published extensions");
   return;
+}
 
-try {
+// Load in available commands
+var cmds = [];
+fs.readdirSync(utils.lodir('commands')).forEach(function(file) {
+  cmds.push(file.slice(0, -3));
+});
+
+if (cmds.indexOf(args[0]) !== -1) {
   var filename = utils.lodir('commands/', args[0]);
   var cmd = require(filename);
+
   cmd.run(args);
-} catch(e) {
+} else {
   console.log('Could not find ' + args[0].red);
-  return;
 }

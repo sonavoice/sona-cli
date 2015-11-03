@@ -8,10 +8,11 @@ var pack     = require('../package.json');
 
 module.exports.run = function(args) {
   var host;
-  var demo = true;
+  var email;
+  var demo = false;
 
   if (!demo) {
-    host = "http://sonavoice.com";
+    host = "https://sonavoice.com";
   } else {
     host = "http://localhost:3000";
   }
@@ -26,6 +27,7 @@ module.exports.run = function(args) {
     name: 'password',
     hidden: true
   }], function (err, result) {
+    email = result.email;
     request.post(host + "/developer", {
       form: {
         email: result.email,
@@ -35,9 +37,11 @@ module.exports.run = function(args) {
       if (response.statusCode === 201) {
         console.log("New account created successfully! You are logged in!".green);
         utils.setGUID(response.body);
+        utils.setEmail(email);
       } else if (response.statusCode === 200) {
         console.log("Logged in successfully!".green);
         utils.setGUID(response.body);
+        utils.setEmail(email);
       } else if (response.statusCode === 401) {
         console.log("Invalid login!".red);
       }
