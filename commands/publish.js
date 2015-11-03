@@ -5,6 +5,11 @@ var utils = require('../utils');
 var request = require('request');
 
 module.exports.run = function(args) {
+  if (utils.getGUID() === null) {
+    console.log("You must be logged in to publish extensions.".yellow);
+    return
+  }
+
   // set name to folder name if undefined
   var name = (args[1]) ? args[1] : path.basename(process.cwd());
 
@@ -30,19 +35,26 @@ module.exports.run = function(args) {
         var host;
         var demo = false;
         if (!demo) {
-          host = "http://viapi.io";
+          host = "https://sonavoice.com";
         } else {
           host = "http://localhost:3000";
         }
 
-        fs.createReadStream(utils.lodir(name + '.zip')).pipe(request.post(host + "/extension", function(err, response) {
+        var formData = {
+          guid: utils.getGUID(),
+          extension: fs.createReadStream(utils.lodir(name + '.zip')),
+          email: utils.getEmail(),
+          name: name,
+        };
+
+        request.post({url:host + '/extension', formData: formData}, function (err, response, body) {
           if (response === undefined || response.statusCode !== 200) {
             console.log(("Unable to publish " + name + "! A server error occured.").red);
-            console.log(response.statusCode);
+            console.log(body + "(" + response.statusCode + ")");
           } else {
             console.log((name + " was published successfully!").green);
           }
-        }));
+        });
       });
 
 
