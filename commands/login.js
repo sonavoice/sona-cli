@@ -11,11 +11,7 @@ module.exports.run = function(args) {
   var email;
   var demo = false;
 
-  if (!demo) {
-    host = "https://sonavoice.com";
-  } else {
-    host = "http://localhost:3000";
-  }
+  host = (demo) ? 'http://localhost:3000' : 'https://sonavoice.com';
 
   prompt.message = pack.name;
   prompt.start();
