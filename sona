@@ -1,15 +1,15 @@
 #!/usr/bin/env node
+var tabtab = require('tabtab');
 
 var path     = require('path');
 var fs       = require('fs.extra');
 var color    = require('colors');
 var request  = require('request');
+var uploader = require('file-uploader');
 var utils    = require('./utils.js');
 var pack     = require('./package.json');
-var uploader = require('file-uploader');
 
 var args = process.argv.slice(2);
-var demo = true;
 var config = utils.getConfig();
 
 if (!args.length || args[0] === "--help" || args[0] === "help") {
@@ -18,6 +18,12 @@ if (!args.length || args[0] === "--help" || args[0] === "help") {
   console.log("   config\tView saved settings");
   console.log("   publish\tUpload extension to Sona server");
   console.log("   login\tAuthenticate yourself as the author of published extensions");
+  console.log("   logout\tLog off of this device");
+  return;
+} else if (args[0] === "--autocomplete") {
+  fs.appendFile(utils.getHome() + '/.profile', 'source ' + utils.lodir("autocomplete.sh"), function (err) {
+    console.log("Autocomplete enabled!".green);
+  });
   return;
 }
 
@@ -33,5 +39,5 @@ if (cmds.indexOf(args[0]) !== -1) {
 
   cmd.run(args);
 } else {
-  console.log('Could not find ' + args[0].red);
+  utils.error('sona: \'' + args[0] + '\' is not a sona command. See \'sona --help\'');
 }

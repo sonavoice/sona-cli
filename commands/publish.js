@@ -6,8 +6,8 @@ var request = require('request');
 
 module.exports.run = function(args) {
   if (utils.getGUID() === null) {
-    console.log("You must be logged in to publish extensions.".yellow);
-    return
+    utils.warning('You must be logged in to publish extensions.');
+    return;
   }
 
   // set name to folder name if undefined
@@ -18,15 +18,14 @@ module.exports.run = function(args) {
   var filename = process.cwd() + '/extension.js';
   fs.readFile(filename, 'utf-8', function(err, data) {
     if (err) {
-      console.log('err =', err);
-      console.log('Could not read extension.js');
+      utils.error("Could not load extension.js");
       return;
     }
 
     try {
       var obj = JSON.parse(data);
       if (!isValidFile(obj)) {
-        console.log('You are missing properties in your extension.'.red);
+        utils.error('You are missing properties in your extension.');
         return;
       }
 
@@ -49,8 +48,7 @@ module.exports.run = function(args) {
 
         request.post({url:host + '/extension', formData: formData}, function (err, response, body) {
           if (response === undefined || response.statusCode !== 200) {
-            console.log(("Unable to publish " + name + "! A server error occured.").red);
-            console.log(body + "(" + response.statusCode + ")");
+            utils.error("Unable to publish " + name + "! A server error occured. (" + body + ")[" + response.statusCode + "]");
           } else {
             console.log((name + " was published successfully!").green);
           }
@@ -59,8 +57,7 @@ module.exports.run = function(args) {
 
 
     } catch(e) {
-      console.log(e);
-      console.log('Invalid extension. Please check your syntax.'.red);
+      utils.error('Invalid extension. Please check your syntax.');
       return;
     }
 

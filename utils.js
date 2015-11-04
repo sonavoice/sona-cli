@@ -70,6 +70,14 @@ var zip = function(dir, name, cb) {
   archive.finalize();
 };
 
+var warning = function(txt) {
+  console.log(txt.yellow);
+};
+
+var error = function(txt) {
+  console.log(txt.red);
+};
+
 module.exports.lodir = lodir;
 module.exports.getConfig = getConfig;
 module.exports.getGUID = getGUID;
@@ -77,4 +85,6 @@ module.exports.setGUID = setGUID;
 module.exports.getEmail = getEmail;
 module.exports.setEmail = setEmail;
 module.exports.getHome = getHome;
+module.exports.warning = warning;
+module.exports.error = error;
 module.exports.zip = zip;
