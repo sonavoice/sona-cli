@@ -9,5 +9,5 @@ module.exports = {
       var message = args[1];
     }
   },
-  sampleCommands: ['To Sarah say I\'m running late']
+  sampleCommands: ['*To* Sarah *say* I\'m running late']
 }

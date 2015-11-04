@@ -62,6 +62,9 @@ module.exports.run = function(args) {
     } else if (!obj.hasOwnProperty('commands')) {
       console.log('Missing commands'.red);
       return false;
+    } else if (!obj.hasOwnProperty('sampleCommands')) {
+      console.log('Missing sample commands'.red);
+      return false;
     } else {
       return true;
     }
