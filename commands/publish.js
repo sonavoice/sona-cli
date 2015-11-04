@@ -6,8 +6,8 @@ var request = require('request');
 
 module.exports.run = function(args) {
   if (utils.getGUID() === null) {
-    console.log("You must be logged in to publish extensions.".yellow);
-    return
+    utils.warning('You must be logged in to publish extensions.');
+    return;
   }
 
   // set name to folder name if undefined

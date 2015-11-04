@@ -30,16 +30,20 @@ module.exports.run = function(args) {
         password: result.password
       }
     }, function(err, response, body) {
-      if (response.statusCode === 201) {
-        console.log("New account created successfully! You are logged in!".green);
-        utils.setGUID(response.body);
-        utils.setEmail(email);
-      } else if (response.statusCode === 200) {
-        console.log("Logged in successfully!".green);
-        utils.setGUID(response.body);
-        utils.setEmail(email);
-      } else if (response.statusCode === 401) {
-        console.log("Invalid login!".red);
+      if (err) {
+        utils.error("Sona servers are currently down. Please try again later.");
+      } else {
+        if (response.statusCode === 201) {
+          console.log("New account created successfully! You are logged in!".green);
+          utils.setGUID(response.body);
+          utils.setEmail(email);
+        } else if (response.statusCode === 200) {
+          console.log("Logged in successfully!".green);
+          utils.setGUID(response.body);
+          utils.setEmail(email);
+        } else if (response.statusCode === 401) {
+          utils.error("Invalid login!");
+        }
       }
     });
   });
