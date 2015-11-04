@@ -23,9 +23,21 @@ module.exports.run = function(args) {
       return;
     }
 
+    if (!isValidFile(data))
+      return;
+
+    var sampleCommands;
+
     try {
-      if (!isValidFile(data))
-        return;
+      sampleCommands = getSampleCommands(data);
+    } catch(e) {
+      console.log(e);
+      console.log('sampleCommands is not a valid array.'.red);
+      return;
+    }
+
+    try {
+
 
       utils.zip('.', name, function() {
 
@@ -42,7 +54,7 @@ module.exports.run = function(args) {
 
         request.post({url:host + '/extension', formData: formData}, function (err, response, body) {
           if (response === undefined || response.statusCode !== 200) {
-            console.log(('Unable to publish ' + name + '! A server error occured.').red);
+            console.log(('Unable to publish ' + name + '! A server error occurred.').red);
             console.log(body + '(' + response.statusCode + ')');
           } else {
             console.log((name + ' was published successfully!').green);
@@ -61,7 +73,6 @@ module.exports.run = function(args) {
 
   function isValidFile(data) {
     var match = data.match(/(\w+):/g);
-    console.log('match =', match);
     if (!match)
       return false;
 
@@ -87,5 +98,14 @@ module.exports.run = function(args) {
       return false;
     }
     return true;
+  }
+
+  function getSampleCommands(data) {
+    var match = data.match(/sampleCommands:(?:.*?)(\[.*\])/);
+    if (!match)
+      return [];
+
+    var commands = JSON.parse(match[1].replace(/'/g, '"'));
+    return commands;
   }
 }
