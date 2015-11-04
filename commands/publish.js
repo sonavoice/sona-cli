@@ -6,67 +6,86 @@ var request = require('request');
 
 module.exports.run = function(args) {
   if (utils.getGUID() === null) {
-    utils.warning('You must be logged in to publish extensions.');
+    console.log('You must be logged in to publish extensions.'.yellow);
     return;
   }
 
   // set name to folder name if undefined
   var name = (args[1]) ? args[1] : path.basename(process.cwd());
 
-  console.log("Publishing " + name.yellow + "...");
+  console.log('Publishing ' + name.yellow + '...');
 
-  var ext;
-  try {
-    ext = require(process.cwd() + '/extension');
-  } catch(e) {
-    console.log('Unable to load file. Please check your syntax.'.red);
-    console.log(e);
-    return;
-  }
+  var filename = process.cwd() + '/extension.js';
+  fs.readFile(filename, 'utf-8', function(err, data) {
+    if (err) {
+      console.log('err =', err);
+      console.log('Could not read extension.js');
+      return;
+    }
 
-  if (!isValidFile(ext)) {
-    return;
-  }
+    try {
+      if (!isValidFile(data))
+        return;
 
-  utils.zip('.', name, function() {
+      utils.zip('.', name, function() {
 
-    var host;
-    var demo = false;
+        var host;
+        var demo = false;
+        host = (demo) ? 'http://localhost:3000' : 'https://sonavoice.com';
 
-    host = (demo) ? 'http://localhost:3000' : 'https://sonavoice.com';
+        var formData = {
+          guid: utils.getGUID(),
+          extension: fs.createReadStream(utils.lodir(name + '.zip')),
+          email: utils.getEmail(),
+          name: name,
+        };
 
-    var formData = {
-      guid: utils.getGUID(),
-      extension: fs.createReadStream(utils.lodir(name + '.zip')),
-      email: utils.getEmail(),
-      name: name,
-    };
+        request.post({url:host + '/extension', formData: formData}, function (err, response, body) {
+          if (response === undefined || response.statusCode !== 200) {
+            console.log(('Unable to publish ' + name + '! A server error occured.').red);
+            console.log(body + '(' + response.statusCode + ')');
+          } else {
+            console.log((name + ' was published successfully!').green);
+          }
+        });
+      });
 
-    request.post({url:host + '/extension', formData: formData}, function (err, response, body) {
-      if (response === undefined || response.statusCode !== 200) {
-        console.log(("Unable to publish " + name + "! A server error occured.").red);
-        console.log(body + "(" + response.statusCode + ")");
-      } else {
-        console.log((name + " was published successfully!").green);
-      }
-    });
+
+    } catch(e) {
+      console.log(e);
+      console.log('Invalid extension. Please check your syntax.'.red);
+      return;
+    }
+
   });
 
-  function isValidFile(obj) {
-    if (!obj.hasOwnProperty('title')) {
-      console.log('Missing title.'.red);
+  function isValidFile(data) {
+    var match = data.match(/(\w+):/g);
+    console.log('match =', match);
+    if (!match)
       return false;
-    } else if (!obj.hasOwnProperty('iconURL')) {
-      console.log('Missing iconURL.'.red);
-      return false;
-    } else if (!obj.hasOwnProperty('commands')) {
-      console.log('Missing commands'.red);
-      return false;
-    } else if (!obj.hasOwnProperty('sampleCommands')) {
-      console.log('Missing sample commands'.red);
-      return false;
-    } else {
-      return true;
+
+    var keys = {};
+    for (var i = 0; i < match.length; i++) {
+      keys[match[i]] = 1;
     }
+    
+    if (!keys.hasOwnProperty('title:')) {
+      console.log('title property not found.'.red);
+      return false;
+    }
+    if (!keys.hasOwnProperty('iconURL:')) {
+      console.log('iconURL property not found.'.red);
+      return false;
+    }
+    if (!keys.hasOwnProperty('commands:')) {
+      console.log('commands property not found.'.red);
+      return false;
+    }
+    if (!keys.hasOwnProperty('sampleCommands:')) {
+      console.log('sampleCommands property not found.'.red);
+      return false;
+    }
+    return true;
   }
 }
