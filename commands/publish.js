@@ -6,7 +6,7 @@ var request = require('request');
 
 module.exports.run = function(args) {
   if (utils.getGUID() === null) {
-    console.log('You must be logged in to publish extensions.'.yellow);
+    utils.warning('You must be logged in to publish extensions.');
     return;
   }
 
@@ -18,8 +18,7 @@ module.exports.run = function(args) {
   var filename = process.cwd() + '/extension.js';
   fs.readFile(filename, 'utf-8', function(err, data) {
     if (err) {
-      console.log('err =', err);
-      console.log('Could not read extension.js');
+      utils.error('Could not read extension.js');
       return;
     }
 
@@ -31,8 +30,7 @@ module.exports.run = function(args) {
     try {
       sampleCommands = getSampleCommands(data);
     } catch(e) {
-      console.log(e);
-      console.log('sampleCommands is not a valid array.'.red);
+      utils.error('sampleCommands is not a valid array.');
       return;
     }
 
@@ -42,7 +40,7 @@ module.exports.run = function(args) {
       utils.zip('.', name, function() {
 
         var host;
-        var demo = false;
+        var demo = true;
         host = (demo) ? 'http://localhost:3000' : 'https://sonavoice.com';
 
         var formData = {
@@ -54,8 +52,7 @@ module.exports.run = function(args) {
 
         request.post({url:host + '/extension', formData: formData}, function (err, response, body) {
           if (response === undefined || response.statusCode !== 200) {
-            console.log(('Unable to publish ' + name + '! A server error occurred.').red);
-            console.log(body + '(' + response.statusCode + ')');
+            utils.error('Unable to publish ' + name + '! A server error occurred. (' + body + ')[' + response.statusCode + ']');
           } else {
             console.log((name + ' was published successfully!').green);
           }
@@ -64,8 +61,7 @@ module.exports.run = function(args) {
 
 
     } catch(e) {
-      console.log(e);
-      console.log('Invalid extension. Please check your syntax.'.red);
+      utils.error('Invalid extension. Please check your syntax.');
       return;
     }
 
@@ -82,26 +78,26 @@ module.exports.run = function(args) {
     }
     
     if (!keys.hasOwnProperty('title:')) {
-      console.log('title property not found.'.red);
+      utils.error('title property not found.');
       return false;
     }
     if (!keys.hasOwnProperty('iconURL:')) {
-      console.log('iconURL property not found.'.red);
+      utils.error('iconURL property not found.');
       return false;
     }
     if (!keys.hasOwnProperty('commands:')) {
-      console.log('commands property not found.'.red);
+      utils.error('commands property not found.');
       return false;
     }
     if (!keys.hasOwnProperty('sampleCommands:')) {
-      console.log('sampleCommands property not found.'.red);
+      utils.error('sampleCommands property not found.');
       return false;
     }
     return true;
   }
 
   function getSampleCommands(data) {
-    var match = data.match(/sampleCommands:(?:.*?)(\[.*\])/);
+    var match = data.match(/sampleCommands:(?:[\s\S]*?)(\[[\s\S]*\])/);
     if (!match)
       return [];
 

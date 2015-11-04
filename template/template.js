@@ -8,6 +8,5 @@ module.exports = {
       var user = args[0];
       var message = args[1];
     }
-  },
-  sampleCommands: ['*To* Sarah *say* I\'m running late']
+  }
 }
