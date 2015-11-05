@@ -18,7 +18,7 @@ module.exports.run = function(args) {
   fs.copyRecursive(utils.lodir('template/'), directory + "/", function(err) {
     if (err) console.log(DIR_ALREADY_INIT.red);
     else {
-      console.log(('Initialized empty Sona extension in ' + process.cwd() + (directory !== "." ? "/" : "") + directory.slice(0, -1)).green);
+      console.log(('Initialized empty Sona extension in ' + process.cwd() + (directory !== "." ? "/" + directory : "")).green);
     }
   });
 };
