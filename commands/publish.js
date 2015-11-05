@@ -51,11 +51,15 @@ module.exports.run = function(args) {
         };
 
         request.post({url:host + '/extension', formData: formData}, function (err, response, body) {
-          if (response === undefined || response.statusCode !== 200) {
-            utils.error('Unable to publish ' + name + '! A server error occurred. (' + body + ')[' + response.statusCode + ']');
+          if (response === undefined) utils.error('A server error occured');
+          else if (response.statusCode !== 200) {
+            utils.error('Unable to publish ' + name + '! A server error occurred. (' + body + ')[' + (response !== undefined ? response.statusCode : "") + ']');
           } else {
             console.log((name + ' was published successfully!').green);
           }
+
+          // Remove zip file when finished uploading
+          fs.unlinkSync(utils.lodir(name + '.zip'));
         });
       });
 
@@ -87,10 +91,6 @@ module.exports.run = function(args) {
     }
     if (!keys.hasOwnProperty('commands:')) {
       utils.error('commands property not found.');
-      return false;
-    }
-    if (!keys.hasOwnProperty('sampleCommands:')) {
-      utils.error('sampleCommands property not found.');
       return false;
     }
     return true;
