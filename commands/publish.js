@@ -40,7 +40,7 @@ module.exports.run = function(args) {
       utils.zip('.', name, function() {
 
         var host;
-        var demo = true;
+        var demo = false;
         host = (demo) ? 'http://localhost:3000' : 'https://sonavoice.com';
 
         var formData = {
@@ -53,7 +53,7 @@ module.exports.run = function(args) {
         request.post({url:host + '/extension', formData: formData}, function (err, response, body) {
           if (response === undefined) utils.error('A server error occured');
           else if (response.statusCode !== 200) {
-            utils.error('Unable to publish ' + name + '! A server error occurred. (' + body + ')[' + (response !== undefined ? response.statusCode : "") + ']');
+            utils.error('Unable to publish ' + name + '! A server error occured. (' + body + ')[' + (response !== undefined ? response.statusCode : "") + ']');
           } else {
             console.log((name + ' was published successfully!').green);
           }

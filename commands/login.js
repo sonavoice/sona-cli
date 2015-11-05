@@ -9,7 +9,7 @@ var pack     = require('../package.json');
 module.exports.run = function(args) {
   var host;
   var email;
-  var demo = true;
+  var demo = false;
 
   host = (demo) ? 'http://localhost:3000' : 'https://sonavoice.com';
 
