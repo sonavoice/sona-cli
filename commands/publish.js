@@ -55,7 +55,11 @@ module.exports.run = function(args) {
           else if (response.statusCode !== 200) {
             utils.error('Unable to publish ' + name + '! A server error occured. (' + body + ')[' + (response !== undefined ? response.statusCode : "") + ']');
           } else {
-            console.log((name + ' was published successfully!').green);
+            if (response.body === "updated") {
+              console.log((name + ' was updated successfully!').green);
+            } else {
+              console.log((name + ' was published successfully!').green);
+            }
           }
 
           // Remove zip file when finished uploading
