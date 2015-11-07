@@ -24,25 +24,25 @@ module.exports.run = function(args) {
     hidden: true
   }], function (err, result) {
     email = result.email;
-    request.post(host + "/developer", {
+    request.post(host + '/developer', {
       form: {
         email: result.email,
         password: result.password
       }
     }, function(err, response, body) {
       if (err) {
-        utils.error("Sona servers are currently down. Please try again later.");
+        utils.error('Sona servers are currently down. Please try again later.');
       } else {
         if (response.statusCode === 201) {
-          console.log("New account created successfully! You are logged in!".green);
+          utils.success('New account created successfully! You are logged in!');
           utils.setGUID(response.body);
           utils.setEmail(email);
         } else if (response.statusCode === 200) {
-          console.log("Logged in successfully!".green);
+          utils.success('Logged in successfully!');
           utils.setGUID(response.body);
           utils.setEmail(email);
         } else if (response.statusCode === 401) {
-          utils.error("Invalid login!");
+          utils.error('Invalid login!');
         }
       }
     });

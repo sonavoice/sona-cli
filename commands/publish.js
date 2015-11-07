@@ -1,7 +1,7 @@
-var path = require('path');
-var fs = require('fs');
-var color = require('colors');
-var utils = require('../utils');
+var path    = require('path');
+var fs      = require('fs');
+var color   = require('colors');
+var utils   = require('../utils');
 var request = require('request');
 
 module.exports.run = function(args) {
@@ -56,9 +56,9 @@ module.exports.run = function(args) {
             utils.error('Unable to publish ' + name + '! A server error occured. (' + body + ')[' + (response !== undefined ? response.statusCode : "") + ']');
           } else {
             if (response.body === "updated") {
-              console.log((name + ' was updated successfully!').green);
+              utils.success(name + ' was updated successfully!');
             } else {
-              console.log((name + ' was published successfully!').green);
+              utils.success(name + ' was published successfully!');
             }
           }
 

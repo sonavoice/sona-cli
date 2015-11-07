@@ -5,7 +5,7 @@ module.exports = {
   iconURL: 'logo.png',
   commands: {
     'to $1 say $2': function(cb, auth, args) {
-      var user = args[0];
+      var user    = args[0];
       var message = args[1];
     }
   }
