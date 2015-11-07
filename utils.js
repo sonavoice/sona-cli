@@ -18,13 +18,13 @@ var getHome = function() {
 var getConfig = function() {
   var config;
   try {
-    config = JSON.parse(fs.readFileSync(getHome() + "/.sona.json"));
+    config = JSON.parse(fs.readFileSync(path.join(getHome(), '.sona.json')));
   } catch (e) {
     config = {
       guid: null,
       email: null,
     };
-    fs.writeFileSync(getHome() + "/.sona.json", JSON.stringify(config, null, 2));
+    fs.writeFileSync(path.join(getHome(), '.sona.json'), JSON.stringify(config, null, 2));
   }
   return config;
 };
@@ -34,9 +34,9 @@ var getGUID = function() {
 };
 
 var setGUID = function(guid) {
-  var config = JSON.parse(fs.readFileSync(getHome() + "/.sona.json"));
+  var config = JSON.parse(fs.readFileSync(path.join(getHome(), '.sona.json')));
   config.guid = guid;
-  fs.writeFileSync(getHome() + "/.sona.json", JSON.stringify(config, null, 2));
+  fs.writeFileSync(path.join(getHome(), '.sona.json'), JSON.stringify(config, null, 2));
 };
 
 var getEmail = function() {
@@ -44,18 +44,16 @@ var getEmail = function() {
 };
 
 var setEmail = function(email) {
-  var config = JSON.parse(fs.readFileSync(getHome() + "/.sona.json"));
+  var config = JSON.parse(fs.readFileSync(path.join(getHome(), '.sona.json')));
   config.email = email;
-  fs.writeFileSync(getHome() + "/.sona.json", JSON.stringify(config, null, 2));
+  fs.writeFileSync(path.join(getHome(), '.sona.json'), JSON.stringify(config, null, 2));
 };
 
 var zip = function(dir, name, cb) {
-  var output = fs.createWriteStream(lodir(name + ".zip"));
+  var output = fs.createWriteStream(lodir(name + '.zip'));
   var archive = archiver('zip');
 
   output.on('close', function() {
-    //console.log(archive.pointer() + ' total bytes');
-    //console.log('archiver has been finalized and the output file descriptor has closed.');
     cb();
   });
 
@@ -78,6 +76,10 @@ var error = function(txt) {
   console.log(txt.red);
 };
 
+var success = function(txt) {
+  console.log(txt.green);
+};
+
 module.exports.lodir = lodir;
 module.exports.getConfig = getConfig;
 module.exports.getGUID = getGUID;
@@ -87,4 +89,5 @@ module.exports.setEmail = setEmail;
 module.exports.getHome = getHome;
 module.exports.warning = warning;
 module.exports.error = error;
+module.exports.success = success;
 module.exports.zip = zip;

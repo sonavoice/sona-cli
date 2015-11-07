@@ -1,8 +1,8 @@
 {
-  "name": "Sona",
+  "name": "sona-cli",
   "version": "0.0.1",
-  "description": "An npm module for creating and publishing Sona applications.",
-  "author": "Sona Inc.",
+  "description": "An npm module for creating and publishing Sona extensions.",
+  "author": "Sona",
   "preferGlobal": "true",
   "bin": {
     "sona": "sona"
